@@ -37,7 +37,7 @@ struct EventCardView: View {
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             if let imageUrl = event.imageURLs.first {
-                CacheImage(imageUrl, contentMode: .fill, aspectRatio: 5 / 3) {
+                CacheImage(imageUrl, contentMode: .fill, aspectRatio: 3 / 4) {
                     Image(systemName: "photo")
                 }
                 .frame(height: 180)
@@ -59,10 +59,12 @@ struct EventCardView: View {
                 Text(event.title)
                     .font(.headline)
                     .foregroundColor(.white)
+                
                 Text(event.description)
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.85))
                     .lineLimit(1)
+                
                 Text(event.startDate, style: .date)
                     .font(.caption)
                     .foregroundColor(.white.opacity(0.8))

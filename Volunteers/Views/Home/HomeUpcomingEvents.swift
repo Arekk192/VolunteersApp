@@ -78,7 +78,9 @@ fileprivate struct EventRow: View {
         }
         .task {
             do {
-                geocodedLocation = try await event.location.toAddress()
+                if let location = event.location {
+                    geocodedLocation = try await location.toAddress()
+                }
             } catch {
                 geocodedLocation = ""
             }

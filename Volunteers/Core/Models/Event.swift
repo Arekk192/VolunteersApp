@@ -15,7 +15,7 @@ struct Event: Identifiable, Codable, Hashable {
     
     var title: String
     var description: String
-    var location: EventLocation
+    var location: EventLocation?
     var startDate: Date
     var endDate: Date
     var imageURLs: [String]
