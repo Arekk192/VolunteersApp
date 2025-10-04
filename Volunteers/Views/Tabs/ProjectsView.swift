@@ -36,18 +36,12 @@ struct EventCardView: View {
     
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            if let imageUrl = event.imageURLs.first, let url = URL(string: imageUrl) {
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(height: 180)
-                        .clipped()
-                } placeholder: {
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(height: 180)
+            if let imageUrl = event.imageURLs.first {
+                CacheImage(imageUrl, contentMode: .fill, aspectRatio: 5 / 3) {
+                    Image(systemName: "photo")
                 }
+                .frame(height: 180)
+                .clipped()
             } else {
                 Rectangle()
                     .fill(Color.gray.opacity(0.2))
@@ -75,7 +69,7 @@ struct EventCardView: View {
             }
             .padding()
         }
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .clipShape(.rect(cornerRadius: 15))
         .shadow(radius: 4, y: 2)
     }
 }

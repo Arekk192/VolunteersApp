@@ -20,17 +20,29 @@ struct UserMessageView: View {
             onClick(viewRect)
         } label: {
             HStack(spacing: 12) {
-                Image(user.profilePicture ?? "person.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 45, height: 45)
-                    .clipShape(.circle)
-                    .opacity(configuration.activeId == user.id ? 0 : 1)
-                    .onGeometryChange(for: CGRect.self) { proxy in
-                        proxy.frame(in: .global)
-                    } action: { newValue in
-                        viewRect = newValue
+                Group {
+                    if let image = user.profilePicture {
+                        CacheImage(image, contentMode: .fill, aspectRatio: 1.0) {
+                            Circle()
+                                .fill(.gray)
+                                .frame(width: 45, height: 45)
+                                .clipShape(.circle)
+                        }
+                        .frame(width: 45, height: 45)
+                        .clipShape(.circle)
+                    } else {
+                        Circle()
+                            .fill(.gray)
+                            .frame(width: 45, height: 45)
+                            .clipShape(.circle)
                     }
+                }
+                .opacity(configuration.activeId == user.id ? 0 : 1)
+                .onGeometryChange(for: CGRect.self) { proxy in
+                    proxy.frame(in: .global)
+                } action: { newValue in
+                    viewRect = newValue
+                }
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(user.displayName)

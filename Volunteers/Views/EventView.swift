@@ -32,30 +32,18 @@ struct EventView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 15) {
-                ZStack(alignment: .bottom) {
-                    if let firstImage = event.imageURLs.first,
-                       let url = URL(string: firstImage) {
-                        AsyncImage(url: url) { image in
-                            image
-                                .resizable()
-                                .frame(maxWidth: .infinity)
-                                // .aspectRatio(3 / 4, contentMode: .fill)
-                                .clipped()
-                        } placeholder: {
-                            ZStack {
-                                Rectangle()
-                                    .fill(Color.gray.opacity(0.2))
-                                
-                                ProgressView()
-                            }
+                Group {
+                    if let image = event.imageURLs.first {
+                        CacheImage(image, contentMode: .fill, aspectRatio: 3 / 4) {
+                            Image(systemName: "photo")
                         }
+                        .aspectRatio(3 / 4, contentMode: .fill)
                         .ignoresSafeArea(edges: .top)
                         .shadow(radius: 4)
                     } else {
                         Rectangle()
                             .fill(Color.gray.opacity(0.2))
-                            .frame(height: 220)
-                            .cornerRadius(16)
+                            .aspectRatio(3 / 4, contentMode: .fill)
                             .overlay(
                                 Image(systemName: "photo")
                                     .font(.system(size: 40))
@@ -63,45 +51,47 @@ struct EventView: View {
                             )
                             .shadow(radius: 4)
                     }
-                    
-                    
-                    LinearGradient(
-                        colors: colorScheme == .dark
-                        ? [Color.black.opacity(0), Color.black.opacity(1)]
-                        : [Color.white.opacity(0), Color.white.opacity(1)],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .frame(height: 150)
-                    
-                    VStack(spacing: 15) {
-                        HStack {
-                            Text(event.title)
-                                .font(.largeTitle)
-                                .fontWeight(.bold)
-                                .foregroundStyle(Color.primary)
-                            
-                            Spacer()
-                        }
+                }
+                .overlay(alignment: .bottom) {
+                    ZStack(alignment: .bottom) {
+                        LinearGradient(
+                            colors: colorScheme == .dark
+                            ? [Color.black.opacity(0), Color.black.opacity(1)]
+                            : [Color.white.opacity(0), Color.white.opacity(1)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: 100)
                         
-                        HStack(spacing: 10) {
-                            Image(systemName: "calendar")
-                                .foregroundColor(Color.primary)
+                        VStack(spacing: 15) {
+                            HStack {
+                                Text(event.title)
+                                    .font(.largeTitle)
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(Color.primary)
+                                
+                                Spacer()
+                            }
+                            
+                            HStack(spacing: 10) {
+                                Image(systemName: "calendar")
+                                    .foregroundColor(Color.primary)
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                
+                                Text(event.startDate.formatted(as: "dd MMM HH:mm") +
+                                     " - " +
+                                     event.endDate.formatted(as: "dd MMM HH:mm")
+                                )
                                 .font(.body)
                                 .fontWeight(.medium)
-                            
-                            Text(event.startDate.formatted(as: "dd MMM HH:mm") +
-                                 " - " +
-                                 event.endDate.formatted(as: "dd MMM HH:mm")
-                            )
-                            .font(.body)
-                            .fontWeight(.medium)
-                            
-                            Spacer()
+                                
+                                Spacer()
+                            }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding([.horizontal, .bottom])
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding([.horizontal, .bottom])
                 }
                 
                 VStack(alignment: .leading, spacing: 30) {
@@ -178,6 +168,7 @@ struct EventView: View {
                         Circle()
                             .fill(.blue)
                             .frame(width: 14, height: 14)
+                        
                         Circle()
                             .strokeBorder(Color.white, lineWidth: 2)
                             .frame(width: 14, height: 14)

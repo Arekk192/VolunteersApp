@@ -98,7 +98,7 @@ var mockEvents = [
         location: EventLocation(latitude: 52.2297, longitude: 21.0122),
         startDate: Date().addingTimeInterval(3600),
         endDate: Date().addingTimeInterval(7200),
-        imageURLs: ["https://picsum.photos/seed/team1/600/400"]
+        imageURLs: ["https://picsum.photos/seed/team1/900/1200"]
     ),
     Event(
         organizationId: UUID(),
@@ -107,7 +107,7 @@ var mockEvents = [
         location: EventLocation(latitude: 52.2297, longitude: 21.0122),
         startDate: Date().addingTimeInterval(10800),
         endDate: Date().addingTimeInterval(16200),
-        imageURLs: ["https://picsum.photos/seed/lunch1/600/400"]
+        imageURLs: ["https://picsum.photos/seed/lunch1/900/1200"]
     ),
     Event(
         organizationId: UUID(),
@@ -116,7 +116,7 @@ var mockEvents = [
         location: EventLocation(latitude: 52.2297, longitude: 21.0122),
         startDate: Date().addingTimeInterval(86400),
         endDate: Date().addingTimeInterval(90000),
-        imageURLs: ["https://picsum.photos/seed/deadline1/600/400"]
+        imageURLs: ["https://picsum.photos/seed/deadline1/900/1200"]
     ),
     Event(
         organizationId: UUID(),
@@ -125,7 +125,7 @@ var mockEvents = [
         location: EventLocation(latitude: 52.2297, longitude: 21.0122),
         startDate: Date().addingTimeInterval(172800),
         endDate: Date().addingTimeInterval(180000),
-        imageURLs: ["https://picsum.photos/seed/design1/600/400"]
+        imageURLs: ["https://picsum.photos/seed/design1/900/1200"]
     ),
     Event(
         organizationId: UUID(),
@@ -135,8 +135,8 @@ var mockEvents = [
         startDate: Date().addingTimeInterval(259200),
         endDate: Date().addingTimeInterval(270000),
         imageURLs: [
-            "https://picsum.photos/seed/workshop1/600/400",
-            "https://picsum.photos/seed/workshop2/600/400"
+            "https://picsum.photos/seed/workshop1/900/1200",
+            "https://picsum.photos/seed/workshop2/900/1200"
         ]
     )
 ]

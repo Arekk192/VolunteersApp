@@ -7,7 +7,24 @@
 
 import SwiftUI
 
+enum AuthenticationScreen {
+    case Login
+    case Register
+}
+
 struct ContentView: View {
+    @AppStorage("isLoggedIn") private var isLoggedIn: Bool = false
+    
+    var body: some View {
+        if isLoggedIn {
+            AppContentView()
+        } else {
+            AppAuthenticationView()
+        }
+    }
+}
+
+struct AppContentView: View {
     @State private var currentTab: TabItem = .home
     
     var body: some View {
@@ -25,14 +42,21 @@ struct ContentView: View {
             }
             
             Tab(TabItem.profile.rawValue, systemImage: TabItem.profile.tabImage, value: .profile) {
-                ProfileView(
-                    user: User(
-                        displayName: "Anna Kowalska",
-                        description: "dasdasdas asd asd",
-                        organizations: []
-                    )
-                )
+                ProfileView(user: mockUsers[0])
             }
+        }
+    }
+}
+
+struct AppAuthenticationView: View {
+    @State private var currentScreen: AuthenticationScreen = .Login
+    
+    var body: some View {
+        switch currentScreen {
+        case .Login:
+            LoginView(currentScreen: $currentScreen)
+        case .Register:
+            RegisterView(currentScreen: $currentScreen)
         }
     }
 }

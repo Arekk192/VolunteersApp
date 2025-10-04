@@ -35,18 +35,25 @@ struct MessageDetailView: View {
     private func HeaderView() -> some View {
         VStack(spacing: 6) {
             ZStack {
-                if selectedUser != nil {
-                    Image(user.profilePicture ?? "person.circle")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 50, height: 50)
-                        .clipShape(.circle)
-                        .opacity(configuration.isExpantedCompletely ? 1 : 0)
-                        .onGeometryChange(for: CGRect.self) { proxy in
-                            proxy.frame(in: .global)
-                        } action: { newValue in
-                            configuration.destination = newValue
+                if let selectedUser {
+                    Group {
+                        if let imageUrl = selectedUser.profilePicture {
+                            CacheImage(imageUrl, contentMode: .fill, aspectRatio: 1.0) {
+                                MessageAnimationConfiguration.circularPlaceholder()
+                            }
+                            .frame(width: 50, height: 50)
+                            .clipShape(.circle)
+                        } else {
+                            MessageAnimationConfiguration.circularPlaceholder()
+                                .frame(width: 50, height: 50)
                         }
+                    }
+                    .opacity(configuration.isExpantedCompletely ? 1 : 0)
+                    .onGeometryChange(for: CGRect.self) { proxy in
+                        proxy.frame(in: .global)
+                    } action: { newValue in
+                        configuration.destination = newValue
+                    }
                 }
             }
             .frame(width: 50, height: 50)
@@ -63,6 +70,7 @@ struct MessageDetailView: View {
                         .font(.caption2)
                         .foregroundStyle(Color.primary)
                 }
+                .glassEffect(.regular.interactive(), in: .capsule)
                 .contentShape(.rect)
             }
         }

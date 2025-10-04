@@ -8,11 +8,26 @@
 import SwiftUI
 
 struct MessageAnimationConfiguration {
-    var image: String?
+    var imageView: AnyView?
     var source: CGRect = .zero
     var destination: CGRect = .zero
     var isExpantedCompletely: Bool = false
     var activeId: UUID?
+    
+    static func createCacheImage(_ urlString: String?, placeholder: @escaping () -> some View) -> AnyView? {
+        guard let urlString = urlString else { return nil }
+        return AnyView(
+            CacheImage(urlString, contentMode: .fill, aspectRatio: 1.0) {
+                placeholder()
+            }
+        )
+    }
+    
+    static func circularPlaceholder() -> some View {
+        Circle()
+            .fill(.gray)
+            .frame(width: 45, height: 45)
+    }
 }
 
 struct MessagesView: View {
@@ -27,11 +42,14 @@ struct MessagesView: View {
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 20) {
-                    ForEach(users) { user in
+                    ForEach(mockUsers) { user in
                         UserMessageView(user: user, configuration: $configuration) { rect in
                             configuration.source = rect
                             configuration.destination = rect
-                            configuration.image = user.profilePicture
+                            configuration.imageView = MessageAnimationConfiguration.createCacheImage(
+                                user.profilePicture,
+                                placeholder: { MessageAnimationConfiguration.circularPlaceholder() }
+                            )
                             configuration.activeId = user.id
                             
                             selectedUser = user
@@ -55,12 +73,10 @@ struct MessagesView: View {
         }
         .overlay(alignment: .topLeading) {
             ZStack {
-                if let image = configuration.image {
+                if let imageView = configuration.imageView {
                     let destination = configuration.destination
                     
-                    Image(image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
+                    imageView
                         .frame(width: destination.width, height: destination.height)
                         .clipShape(.circle)
                         .offset(x: destination.minX, y: destination.minY)
@@ -80,7 +96,7 @@ struct MessagesView: View {
                     withAnimation(.easeInOut(duration: 0.35), completionCriteria: .logicallyComplete) {
                         configuration.destination = configuration.source
                     } completion: {
-                        configuration.image = nil
+                        configuration.imageView = nil
                     }
                 }
             }

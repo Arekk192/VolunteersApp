@@ -15,9 +15,25 @@ struct ProfileView: View {
             ScrollView {
                 VStack(spacing: 40) {
                     VStack(spacing: 25) {
-                        Circle()
-                            .fill(.green.gradient)
+                        if let image = user.profilePicture {
+                            CacheImage(image, contentMode: .fill, aspectRatio: 1) {
+                                Circle()
+                                    .fill(.gray)
+                                    .frame(width: 160, height: 160)
+                            }
                             .frame(width: 160, height: 160)
+                            .clipShape(.circle)
+                        } else {
+                            Image(systemName: "person.circle.fill")
+                                .font(.largeTitle)
+                                .frame(width: 160, height: 160)
+                                .clipShape(.circle)
+                                .overlay {
+                                    Circle()
+                                        .stroke(.white, lineWidth: 2.5)
+                                        .frame(width: 160, height: 160)
+                                }
+                        }
                         
                         VStack(spacing: 10) {
                             Text(user.displayName)
@@ -52,8 +68,10 @@ struct ProfileView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Edycja", systemImage: "gearshape") {
-                        
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
+                        Image(systemName: "gearshape")
                     }
                 }
             }
@@ -62,13 +80,7 @@ struct ProfileView: View {
 }
 
 #Preview {
-    ProfileView(
-        user: User(
-            displayName: "",
-            description: "Lorem ipsum",
-            organizations: []
-        )
-    )
+    ProfileView(user: mockUsers[0])
 }
 
 
