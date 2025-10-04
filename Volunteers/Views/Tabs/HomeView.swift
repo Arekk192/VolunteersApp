@@ -27,17 +27,17 @@ struct HomeView: View {
                 .padding()
             }
             .navigationTitle("Projekty")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        
-                    } label: {
-                        Image(systemName: "person.circle.fill")
-                            .font(.title3)
-                            .foregroundColor(.blue)
-                    }
-                }
-            }
+//            .toolbar {
+//                ToolbarItem(placement: .topBarTrailing) {
+//                    Button {
+//                        
+//                    } label: {
+//                        Image(systemName: "person.circle.fill")
+//                            .font(.title3)
+//                            .foregroundColor(.blue)
+//                    }
+//                }
+//            }
             .navigationDestination(for: Event.self) { event in
                 EventView(event: event)
             }

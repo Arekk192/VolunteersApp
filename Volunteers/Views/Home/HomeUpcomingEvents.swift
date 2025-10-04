@@ -35,11 +35,21 @@ fileprivate struct EventRow: View {
     
     var body: some View {
         NavigationLink(value: event) {
-            HStack(spacing: 16) {
-                Rectangle()
-                    .fill(.blue)
-                    .frame(width: 4)
-                    .clipShape(RoundedRectangle(cornerRadius: 2))
+            HStack(spacing: 15) {
+                if let image = event.imageURLs.first {
+                    CacheImage(image, contentMode: .fill, aspectRatio: 1) {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(.gray)
+                            .frame(width: 80, height: 80)
+                    }
+                    .frame(width: 80, height: 80)
+                    .clipShape(.rect(cornerRadius: 10))
+                } else {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(.gray)
+                        .aspectRatio(1.0, contentMode: .fill)
+                        .frame(width: 80, height: 80)
+                }
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(event.title)
@@ -51,7 +61,7 @@ fileprivate struct EventRow: View {
                         Image(systemName: "clock")
                             .font(.caption)
                         
-                        Text("\(event.startDate.formatted(as: "dd MMM yyyy hh:mm")) - \(event.endDate.formatted(as: "dd MMM yyyy hh:mm"))")
+                        Text("\(event.startDate.formatted(as: "dd MMM hh:mm")) - \(event.endDate.formatted(as: "dd MMM hh:mm"))")
                             .font(.caption)
                     }
                     .foregroundColor(.secondary)
@@ -64,15 +74,16 @@ fileprivate struct EventRow: View {
                             .font(.caption)
                     }
                     .foregroundColor(.secondary)
+                    
+                    Spacer()
                 }
                 
                 Spacer()
             }
-            .padding()
-            .background(.ultraThinMaterial)
+            .padding(10)
             .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
             .overlay(
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: 20)
                     .stroke(.white.opacity(0.2), lineWidth: 1)
             )
         }

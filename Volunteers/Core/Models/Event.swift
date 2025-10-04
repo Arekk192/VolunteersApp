@@ -80,7 +80,7 @@ struct EventLocation: Codable, Hashable {
         
         // request.isLoading
         
-        return mapItem.address?.fullAddress ?? "Nieznany adres"
+        return mapItem.address?.shortAddress ?? "Nieznany adres"
     }
     
     func toMapItem(name: String? = nil) -> MKMapItem {
