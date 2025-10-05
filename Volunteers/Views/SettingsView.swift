@@ -20,6 +20,7 @@ struct SettingsView: View {
                 Text("Wyloguj się")
                     .font(.headline)
                     .fontWeight(.medium)
+                    .foregroundStyle(.red)
             }
             .frame(maxWidth: .infinity)
             .padding()

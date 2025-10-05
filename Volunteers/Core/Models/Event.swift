@@ -19,6 +19,8 @@ struct Event: Identifiable, Codable, Hashable {
     var startDate: Date
     var endDate: Date
     var imageURLs: [String]
+    
+    var participationState: ParticipationState = .none
 }
 
 struct EventLocation: Codable, Hashable {
@@ -78,7 +80,7 @@ struct EventLocation: Codable, Hashable {
         let request = MKMapItemRequest(placeDescriptor: descriptor)
         let mapItem = try await request.mapItem
         
-        // request.isLoading
+//         request.isCancelled
         
         return mapItem.address?.shortAddress ?? "Nieznany adres"
     }

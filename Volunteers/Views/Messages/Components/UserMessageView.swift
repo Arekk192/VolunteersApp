@@ -1,5 +1,5 @@
 //
-//  ProfileMessageView.swift
+//  UserMessageView.swift
 //  Volunteers
 //
 //  Created by Arkadiusz Skupień on 04/10/2025.
@@ -10,7 +10,7 @@ import SwiftUI
 
 struct UserMessageView: View {
     var user: User
-    @Binding var configuration: MessageAnimationConfiguration
+    @ObservedObject var viewModel: MessagesViewModel
     var onClick: (CGRect) -> Void
     
     @State private var viewRect: CGRect = .zero
@@ -37,7 +37,7 @@ struct UserMessageView: View {
                             .clipShape(.circle)
                     }
                 }
-                .opacity(configuration.activeId == user.id ? 0 : 1)
+                .opacity(viewModel.animation.activeId == user.id ? 0 : 1)
                 .onGeometryChange(for: CGRect.self) { proxy in
                     proxy.frame(in: .global)
                 } action: { newValue in

@@ -7,13 +7,18 @@
 
 import SwiftUI
 
-struct Message: Identifiable {
+struct Message: Identifiable, Hashable {
     var id: UUID = .init()
     var text: String
     var isReply: Bool = false
+    var sendAt: Date = Date()
+    
+//    var timeString: String {
+//        sendAt.formatted(as: "")
+//    }
 }
 
-let messages: [Message] = [
+let mockMessages: [Message] = [
     .init(text: text1, isReply: true),
     .init(text: text2),
     .init(text: text3),

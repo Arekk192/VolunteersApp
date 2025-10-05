@@ -1,5 +1,5 @@
 //
-//  HomeUpcomingEvents.swift
+//  HomeEventRow.swift
 //  Volunteers
 //
 //  Created by Arkadiusz Skupień on 04/10/2025.
@@ -7,25 +7,7 @@
 
 import SwiftUI
 
-struct HomeUpcomingEvents: View {
-    let events: [Event]
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Nadchodzące wydarzenia")
-                .font(.headline)
-                .fontWeight(.semibold)
-            
-            LazyVStack(spacing: 12) {
-                ForEach(events.sorted(by: { $0.startDate < $1.startDate })) { event in
-                    EventRow(event)
-                }
-            }
-        }
-    }
-}
-
-fileprivate struct EventRow: View {
+struct HomeEventRow: View {
     let event: Event
     @State private var geocodedLocation: String = ""
     
@@ -56,6 +38,7 @@ fileprivate struct EventRow: View {
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundStyle(Color.primary)
+                        .padding(.bottom, 5)
                     
                     HStack {
                         Image(systemName: "clock")
@@ -81,6 +64,7 @@ fileprivate struct EventRow: View {
                 Spacer()
             }
             .padding(10)
+            .background(.ultraThinMaterial, in: .rect(cornerRadius: 20))
             .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
             .overlay(
                 RoundedRectangle(cornerRadius: 20)

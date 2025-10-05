@@ -44,7 +44,7 @@ struct ProfileView: View {
                                 .fontWeight(.semibold)
                                 .foregroundStyle(Color.primary)
                             
-                            Text(user.isAdult ? "Dorosły" : "Małoletni")
+                            Text(user.isAdult ? "Dorosły/a" : "Małoletni/a")
                                 .font(.subheadline)
                                 .fontWeight(.medium)
                                 .padding(.horizontal, 12)

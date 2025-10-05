@@ -5,50 +5,36 @@
 //  Created by Arkadiusz Skupień on 04/10/2025.
 //
 
-
 import SwiftUI
 
 struct InputBar: View {
     let placeholder: String
     @Binding var text: String
     @Binding var isLoading: Bool
-    
     @FocusState.Binding var focused: Bool
-    
     var onSend: () -> Void
-    
-    // Configuration
-    private let font: Font = .system(size: 16)
-    private let fontLineHeight: CGFloat = UIFont.systemFont(ofSize: 16).lineHeight
-    private let minLines: Int = 1
-    private let maxLines: Int = 8
-    private let verticalPadding: CGFloat = 8
-    private let leadingPadding: CGFloat = 15
-    private let trailingPadding: CGFloat = 45
-    
+
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $text)
-                    .font(font)
+                    .font(.system(size: 16))
                     .scrollContentBackground(.hidden)
                     .focused($focused)
-                    .lineLimit(minLines...maxLines)
-                    .frame(minHeight: calculateMinHeight(), maxHeight: calculateMaxHeight())
+                    .lineLimit(1...8)
+                    .frame(minHeight: 24, maxHeight: 168)
                     .fixedSize(horizontal: false, vertical: true)
-                    .padding(.leading, leadingPadding - 4)
-                    .padding(.trailing, trailingPadding - 4)
-                    .padding(.vertical, verticalPadding - 4)
-                    .glassEffect(.regular.interactive(),
-                                 in: .rect(cornerRadius: 25, style: .continuous))
+                    .padding(.leading, 11)
+                    .padding(.trailing, 41)
+                    .padding(.vertical, 4)
                     .disabled(isLoading)
                 
                 if text.isEmpty {
                     Text(placeholder)
-                        .font(font)
+                        .font(.system(size: 16))
                         .foregroundColor(Color.primary.opacity(0.6))
-                        .padding(.leading, leadingPadding)
-                        .padding(.vertical, verticalPadding + 4)
+                        .padding(.leading, 15)
+                        .padding(.vertical, 12)
                         .allowsHitTesting(false)
                 }
             }
@@ -75,15 +61,6 @@ struct InputBar: View {
             .padding(.bottom, 8)
             .padding(.trailing, 6)
         }
-    }
-    
-    private func calculateMinHeight() -> CGFloat {
-        let lineHeight = fontLineHeight
-        return lineHeight * CGFloat(minLines) + (verticalPadding * 2) - 8
-    }
-    
-    private func calculateMaxHeight() -> CGFloat {
-        let lineHeight = fontLineHeight
-        return lineHeight * CGFloat(maxLines - 1) + (verticalPadding * 2)
+        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 25))
     }
 }

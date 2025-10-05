@@ -61,7 +61,7 @@ struct CacheImage<Placeholder: View>: View {
             if let image = image {
                 imageView(Image(uiImage: image))
             } else if isLoading {
-                CircleLoader(size: 20, color: .white)
+                placeholderView(placeholder)
             } else if let _ = error {
                 placeholderView(placeholder)
             } else {

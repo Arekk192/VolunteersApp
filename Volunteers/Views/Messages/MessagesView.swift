@@ -31,11 +31,9 @@ struct MessageAnimationConfiguration {
 }
 
 struct MessagesView: View {
-    
-    @State private var configuration: MessageAnimationConfiguration = .init()
+    @StateObject private var viewModel = MessagesViewModel(user: mockUsers[0])
     @State private var selectedUser: User?
     
-    @State private var searchText: String = ""
     @FocusState private var searchFocused: Bool
     
     var body: some View {
@@ -43,38 +41,40 @@ struct MessagesView: View {
             ScrollView {
                 LazyVStack(spacing: 20) {
                     ForEach(mockUsers) { user in
-                        UserMessageView(user: user, configuration: $configuration) { rect in
-                            configuration.source = rect
-                            configuration.destination = rect
-                            configuration.imageView = MessageAnimationConfiguration.createCacheImage(
+                        UserMessageView(
+                            user: user,
+                            viewModel: viewModel
+                        ) { rect in
+                            viewModel.animation.source = rect
+                            viewModel.animation.destination = rect
+                            viewModel.animation.imageView = MessageAnimationConfiguration.createCacheImage(
                                 user.profilePicture,
                                 placeholder: { MessageAnimationConfiguration.circularPlaceholder() }
                             )
-                            configuration.activeId = user.id
+                            viewModel.animation.activeId = user.id
                             
                             selectedUser = user
                         }
                     }
                 }
-                .padding(.top, 65)
-                .padding(.horizontal)
+                .padding()
             }
-            .overlay(alignment: .top) {
-                SearchBar(text: $searchText, focused: $searchFocused)
+            .safeAreaBar(edge: .top) {
+                SearchBar(text: $viewModel.searchText, focused: $searchFocused)
                     .padding(.horizontal)
             }
             .navigationDestination(item: $selectedUser) { user in
                 MessageDetailView(
                     user: user,
-                    configuration: $configuration,
+                    viewModel: viewModel,
                     selectedUser: $selectedUser
                 )
             }
         }
         .overlay(alignment: .topLeading) {
             ZStack {
-                if let imageView = configuration.imageView {
-                    let destination = configuration.destination
+                if let imageView = viewModel.animation.imageView {
+                    let destination = viewModel.animation.destination
                     
                     imageView
                         .frame(width: destination.width, height: destination.height)
@@ -82,58 +82,25 @@ struct MessagesView: View {
                         .offset(x: destination.minX, y: destination.minY)
                         .transition(.identity)
                         .onDisappear {
-                            configuration = .init()
+                            viewModel.animation = .init()
                         }
                 }
             }
-            .animation(.snappy(duration: 0.3, extraBounce: 0), value: configuration.destination)
+            .animation(.snappy(duration: 0.3, extraBounce: 0), value: viewModel.animation.destination)
             .ignoresSafeArea()
-            .opacity(configuration.isExpantedCompletely ? 0 : 1)
+            .opacity(viewModel.animation.isExpantedCompletely ? 0 : 1)
             .onChange(of: selectedUser == nil) { oldValue, newValue in
                 if newValue {
-                    configuration.isExpantedCompletely = false
+                    viewModel.animation.isExpantedCompletely = false
                     
                     withAnimation(.easeInOut(duration: 0.35), completionCriteria: .logicallyComplete) {
-                        configuration.destination = configuration.source
+                        viewModel.animation.destination = viewModel.animation.source
                     } completion: {
-                        configuration.imageView = nil
+                        viewModel.animation.imageView = nil
                     }
                 }
             }
         }
-    }
-}
-
-struct SearchBar: View {
-    @Binding var text: String
-    @FocusState.Binding var focused: Bool
-    
-    var body: some View {
-        GlassEffectContainer(spacing: 10) {
-            HStack(spacing: 8) {
-                Image(systemName: "magnifyingglass")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                
-                TextField("Wyszukaj", text: $text)
-                    .submitLabel(.search)
-                    .focused($focused)
-                
-                Image(systemName: "xmark.circle.fill")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .opacity(text.isEmpty ? 0 : 1)
-                    .animation(.snappy(duration: 0.07), value: text.isEmpty)
-                    .onTapGesture {
-                        text = ""
-                        focused = false
-                    }
-            }
-            .padding(.horizontal, 15)
-            .frame(height: 45)
-            .glassEffect(.regular.interactive(), in: .capsule)
-        }
-        .animation(.smooth(duration: 0.3, extraBounce: 0), value: focused)
     }
 }
 
