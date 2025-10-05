@@ -39,6 +39,7 @@ struct HomeEventRow: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(Color.primary)
                         .padding(.bottom, 5)
+                        .lineLimit(1)
                     
                     HStack {
                         Image(systemName: "clock")

@@ -10,6 +10,9 @@ import SwiftUI
 struct ProjectsView: View {
     let events: [Event] = mockEvents
     
+    @State private var searchText: String = ""
+    @FocusState private var searchFocused: Bool
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -24,8 +27,13 @@ struct ProjectsView: View {
                 .padding(.vertical)
             }
             .navigationTitle("Wydarzenia")
+            .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: Event.self) { event in
                 EventView(event: event)
+            }
+            .safeAreaBar(edge: .top) {
+                SearchBar(text: $searchText, focused: $searchFocused)
+                    .padding(.horizontal)
             }
         }
     }
@@ -40,20 +48,20 @@ struct EventCardView: View {
                 CacheImage(imageUrl, contentMode: .fill, aspectRatio: 3 / 4) {
                     Image(systemName: "photo")
                 }
-                .frame(height: 180)
+                .frame(height: 240)
                 .clipped()
             } else {
                 Rectangle()
                     .fill(Color.gray.opacity(0.2))
-                    .frame(height: 180)
+                    .frame(height: 240)
             }
             
             LinearGradient(
-                colors: [.black.opacity(0.6), .clear],
+                colors: [.black.opacity(1), .black.opacity(0)],
                 startPoint: .bottom,
                 endPoint: .top
             )
-            .frame(height: 80)
+            .frame(height: 100)
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(event.title)

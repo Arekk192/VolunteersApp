@@ -12,8 +12,8 @@ public extension ButtonStyle where Self == GradientButtonStyle {
         isLoading: Bool = false,
         cornerRadius: CGFloat = 12,
         gradientColors: [Color] = [
-            Color(red: 0.10, green: 0.45, blue: 0.85),
-            Color(red: 0.78, green: 0.18, blue: 0.52)
+            Color(red: 155 / 255, green: 47 / 255, blue: 77 / 255),
+            Color(red: 147 / 255, green: 39 / 255, blue: 71 / 255),
         ],
         shadowColor: Color = .black.opacity(0.3),
         shadowRadius: CGFloat = 8,

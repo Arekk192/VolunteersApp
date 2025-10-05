@@ -49,9 +49,10 @@ struct UserMessageView: View {
                         .font(.callout)
                         .foregroundStyle(Color.primary)
                     
-                    Text("user.lastMessage")
+                    Text(user.lastMessage)
                         .font(.caption2)
                         .foregroundStyle(.gray)
+                        .lineLimit(1)
                 }
                 
                 Spacer()

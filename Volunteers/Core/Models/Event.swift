@@ -9,18 +9,23 @@ import SwiftUI
 import MapKit
 import GeoToolbox
 
-struct Event: Identifiable, Codable, Hashable {
-    var id = UUID()
-    var organizationId: UUID
+struct EventFeedback: Codable, Hashable {
+    let comment: String
+    let addedDate: Date
+}
+
+struct Event: Identifiable, Hashable {
+    let id = UUID()
+    let organizationId: UUID
+    let title: String
+    let description: String
+    let location: EventLocation?
+    let startDate: Date
+    let endDate: Date
+    let imageURLs: [String]
+    let feedback: EventFeedback?
     
-    var title: String
-    var description: String
-    var location: EventLocation?
-    var startDate: Date
-    var endDate: Date
-    var imageURLs: [String]
-    
-    var participationState: ParticipationState = .none
+    var date: Date { startDate }
 }
 
 struct EventLocation: Codable, Hashable {
@@ -95,50 +100,112 @@ struct EventLocation: Codable, Hashable {
 var mockEvents = [
     Event(
         organizationId: UUID(),
-        title: "Spotkanie zespołu",
-        description: "Cotygodniowe spotkanie zespołu developerskiego",
+        title: "Sprzątanie parku miejskiego",
+        description: "Wspólne sprzątanie zielonych terenów w centrum miasta",
         location: EventLocation(latitude: 52.2297, longitude: 21.0122),
-        startDate: Date().addingTimeInterval(3600),
-        endDate: Date().addingTimeInterval(7200),
-        imageURLs: ["https://picsum.photos/seed/team1/900/1200"]
+        startDate: Date().addingTimeInterval(-86400 * 7), // 7 dni temu
+        endDate: Date().addingTimeInterval(-86400 * 7 + 10800),
+        imageURLs: ["https://picsum.photos/seed/parkcleanup/900/600"],
+        feedback: EventFeedback(
+            comment: "Arkadiusz wykazał się niezwykłą sumiennością podczas sprzątania. Jego zaangażowanie w segregację odpadów było wzorowe.",
+            addedDate: Date().addingTimeInterval(-86400 * 6)
+        )
     ),
     Event(
         organizationId: UUID(),
-        title: "Lunch z klientem",
-        description: "Spotkanie biznesowe z kluczowym klientem",
+        title: "Pomoc w schronisku dla zwierząt",
+        description: "Opieka nad bezdomnymi psami i kotami, spacery i sprzątanie boksów",
         location: EventLocation(latitude: 52.2297, longitude: 21.0122),
-        startDate: Date().addingTimeInterval(10800),
-        endDate: Date().addingTimeInterval(16200),
-        imageURLs: ["https://picsum.photos/seed/lunch1/900/1200"]
+        startDate: Date().addingTimeInterval(-86400 * 14), // 14 dni temu
+        endDate: Date().addingTimeInterval(-86400 * 14 + 14400),
+        imageURLs: ["https://picsum.photos/seed/animalShelter/900/600"],
+        feedback: EventFeedback(
+            comment: "Bardzo opiekuńczy wobec zwierząt, szczególnie delikatny z przestraszonymi psami. Ma naturalny talent do pracy ze zwierzętami.",
+            addedDate: Date().addingTimeInterval(-86400 * 13)
+        )
     ),
     Event(
         organizationId: UUID(),
-        title: "Deadline projektu",
-        description: "Ostateczny termin oddania projektu",
+        title: "Zbiórka żywności dla potrzebujących",
+        description: "Wolontariat w banku żywności - sortowanie i pakowanie darów",
         location: EventLocation(latitude: 52.2297, longitude: 21.0122),
-        startDate: Date().addingTimeInterval(86400),
-        endDate: Date().addingTimeInterval(90000),
-        imageURLs: ["https://picsum.photos/seed/deadline1/900/1200"]
+        startDate: Date().addingTimeInterval(-86400 * 21), // 21 dni temu
+        endDate: Date().addingTimeInterval(-86400 * 21 + 7200),
+        imageURLs: ["https://picsum.photos/seed/fooddrive/900/600"],
+        feedback: EventFeedback(
+            comment: "Niezwykle efektywny i zorganizowany. Pomógł usprawnić proces pakowania, co znacząco przyspieszyło naszą pracę.",
+            addedDate: Date().addingTimeInterval(-86400 * 20)
+        )
     ),
     Event(
         organizationId: UUID(),
-        title: "Przegląd designu",
-        description: "Prezentacja i przegląd nowych projektów UI/UX",
+        title: "Warsztaty edukacyjne dla dzieci",
+        description: "Prowadzenie kreatywnych zajęć dla dzieci z domów dziecka",
         location: EventLocation(latitude: 52.2297, longitude: 21.0122),
-        startDate: Date().addingTimeInterval(172800),
-        endDate: Date().addingTimeInterval(180000),
-        imageURLs: ["https://picsum.photos/seed/design1/900/1200"]
-    ),
-    Event(
-        organizationId: UUID(),
-        title: "Warsztaty programistyczne",
-        description: "Szkolenie z nowych technologii programistycznych",
-        location: EventLocation(latitude: 52.2297, longitude: 21.0122),
-        startDate: Date().addingTimeInterval(259200),
-        endDate: Date().addingTimeInterval(270000),
+        startDate: Date().addingTimeInterval(-86400 * 30), // 30 dni temu
+        endDate: Date().addingTimeInterval(-86400 * 30 + 10800),
         imageURLs: [
-            "https://picsum.photos/seed/workshop1/900/1200",
-            "https://picsum.photos/seed/workshop2/900/1200"
-        ]
+            "https://picsum.photos/seed/workshop1/900/600",
+            "https://picsum.photos/seed/workshop2/900/600"
+        ],
+        feedback: EventFeedback(
+            comment: "Świetny kontakt z dziećmi, bardzo kreatywny w wymyślaniu zabaw. Czasem mógłby bardziej angażować nieśmiałe dzieci.",
+            addedDate: Date().addingTimeInterval(-86400 * 29)
+        )
+    ),
+    Event(
+        organizationId: UUID(),
+        title: "Odkrzaczanie szlaków turystycznych",
+        description: "Prace porządkowe na górskich szlakach w ramach akcji 'Czyste Góry'",
+        location: EventLocation(latitude: 52.2297, longitude: 21.0122),
+        startDate: Date().addingTimeInterval(-86400 * 45), // 45 dni temu
+        endDate: Date().addingTimeInterval(-86400 * 45 + 21600),
+        imageURLs: ["https://picsum.photos/seed/hiking/900/600"],
+        feedback: EventFeedback(
+            comment: "Wysoka wytrzymałość fizyczna i doskonała praca w zespole. Pomógł w najtrudniejszych odcinkach szlaku.",
+            addedDate: Date().addingTimeInterval(-86400 * 44)
+        )
+    ),
+    Event(
+        organizationId: UUID(),
+        title: "Towarzystwo dla seniorów",
+        description: "Wizyty i wsparcie dla osób starszych w domopomocy",
+        location: EventLocation(latitude: 52.2297, longitude: 21.0122),
+        startDate: Date().addingTimeInterval(-86400 * 60), // 60 dni temu
+        endDate: Date().addingTimeInterval(-86400 * 60 + 7200),
+        imageURLs: ["https://picsum.photos/seed/seniors/900/600"],
+        feedback: EventFeedback(
+            comment: "Niezwykła cierpliwość i empatia w kontaktach z seniorami. Wielu podopiecznych pytało o następne wizyty.",
+            addedDate: Date().addingTimeInterval(-86400 * 59)
+        )
+    ),
+    Event(
+        organizationId: UUID(),
+        title: "Organizacja biegów charytatywnych",
+        description: "Logistyka i pomoc przy organizacji biegu na rzecz hospicjum",
+        location: EventLocation(latitude: 52.2297, longitude: 21.0122),
+        startDate: Date().addingTimeInterval(-86400 * 75), // 75 dni temu
+        endDate: Date().addingTimeInterval(-86400 * 75 + 28800),
+        imageURLs: [
+            "https://picsum.photos/seed/charityrun1/900/600",
+            "https://picsum.photos/seed/charityrun2/900/600"
+        ],
+        feedback: EventFeedback(
+            comment: "Doskonały w rozwiązywaniu problemów logistycznych. Pomógł w kryzysowej sytuacji z brakiem wody na trasie.",
+            addedDate: Date().addingTimeInterval(-86400 * 74)
+        )
+    ),
+    Event(
+        organizationId: UUID(),
+        title: "Remont świetlicy środowiskowej",
+        description: "Prace remontowe i malowanie pomieszczeń dla dzieci",
+        location: EventLocation(latitude: 52.2297, longitude: 21.0122),
+        startDate: Date().addingTimeInterval(-86400 * 90), // 90 dni temu
+        endDate: Date().addingTimeInterval(-86400 * 90 + 18000),
+        imageURLs: ["https://picsum.photos/seed/renovation/900/600"],
+        feedback: EventFeedback(
+            comment: "Dobrze radził sobie z pracami malarskimi, ale potrzebował więcej nadzoru przy pracach wymagających precyzji.",
+            addedDate: Date().addingTimeInterval(-86400 * 89)
+        )
     )
 ]

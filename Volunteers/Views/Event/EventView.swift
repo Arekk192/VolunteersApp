@@ -32,7 +32,7 @@ struct EventView: View {
                         }
                         .aspectRatio(3 / 4, contentMode: .fill)
                         .ignoresSafeArea(edges: .top)
-                        .shadow(radius: 4)
+                        .shadow(color: colorScheme == .dark ? .black : .white, radius: 4)
                     } else {
                         Rectangle()
                             .fill(Color.gray.opacity(0.2))
@@ -42,7 +42,7 @@ struct EventView: View {
                                     .font(.system(size: 40))
                                     .foregroundColor(.gray)
                             )
-                            .shadow(radius: 4)
+                            .shadow(color: colorScheme == .dark ? .black : .white, radius: 4)
                     }
                 }
                 .overlay(alignment: .bottom) {
@@ -108,28 +108,78 @@ struct EventView: View {
         .sheet(isPresented: $viewModel.showQuestionsModal) {
             QuestionsModalView()
         }
+        .sheet(isPresented: $viewModel.showParticipationModal) {
+            ParticipationConfirmationModal(
+                isPresented: $viewModel.showParticipationModal,
+                participationState: viewModel.participationState,
+                onConfirm: {
+                    Task(priority: .high) {
+                        await viewModel.handleParticipation()
+                    }
+                }
+            )
+        }
+        .onDisappear {
+            viewModel.cancelOperations()
+        }
     }
     
     @ViewBuilder
     private func ParticipationStateButton() -> some View {
         Button {
-            Task {
-                await viewModel.handleParticipation()
+            if viewModel.participationState == .none {
+                viewModel.showParticipationModal = true
+            } else {
+                Task(priority: .high) {
+                    await viewModel.handleParticipation()
+                }
             }
         } label: {
-            let buttonData = viewModel.getParticipationButtonData()
-            
             HStack {
-                Text(buttonData.title)
-                    .font(.body)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(buttonData.color)
-                
-                Image(systemName: buttonData.icon)
-                    .font(.title3)
-                    .foregroundStyle(buttonData.color)
+                if viewModel.isLoading {
+                    CircleLoader(size: 20, color: {
+                        switch viewModel.participationState {
+                        case .accepted: .green
+                        case .request: .orange
+                        case .none: .blue
+                        }
+                    }())
+                    .scaleEffect(0.8)
+                } else {
+                    switch viewModel.participationState {
+                    case .accepted:
+                        Text("Potwierdzono obecność")
+                            .font(.body)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.green)
+                        
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(.green)
+                    case .request:
+                        Text("Oczekuje na potwierdzenie")
+                            .font(.body)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.orange)
+                        
+                        Image(systemName: "clock.badge.questionmark")
+                            .font(.title3)
+                            .foregroundStyle(.orange)
+                    case .none:
+                        Text("Weź udział")
+                            .font(.body)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.blue)
+                        
+                        Image(systemName: "person.crop.circle.badge.plus")
+                            .font(.title3)
+                            .foregroundStyle(.blue)
+                    }
+                }
             }
+            .frame(height: 25)
         }
+        .disabled(viewModel.isLoading)
     }
     
     @ViewBuilder
@@ -226,4 +276,121 @@ struct EventView: View {
 
 #Preview {
     EventView(event: mockEvents[0])
+}
+
+struct ParticipationConfirmationModal: View {
+    @Binding var isPresented: Bool
+    let participationState: ParticipationState
+    let onConfirm: () -> Void
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 24) {
+                Image(systemName: iconName)
+                    .font(.system(size: 60))
+                    .foregroundColor(iconColor)
+                    .symbolEffect(.bounce, value: isPresented)
+                
+                VStack(spacing: 12) {
+                    Text(title)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .multilineTextAlignment(.center)
+                    
+                    Text(message)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(4)
+                }
+                
+                VStack(spacing: 12) {
+                    Button {
+                        onConfirm()
+                        isPresented = false
+                    } label: {
+                        Text(confirmButtonText)
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 50)
+                            .background(buttonColor)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                    
+                    Button("Anuluj", role: .cancel) {
+                        isPresented = false
+                    }
+                    .font(.body)
+                    .fontWeight(.medium)
+                    .foregroundColor(.secondary)
+                }
+            }
+            .padding(25)
+            .navigationTitle("Potwierdzenie udziału")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Zamknij") {
+                        isPresented = false
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium])
+        .presentationCornerRadius(20)
+    }
+    
+    private var title: String {
+        switch participationState {
+        case .none:
+            return "Weź udział w wydarzeniu"
+        case .request:
+            return "Anuluj zgłoszenie"
+        case .accepted:
+            return "Rezygnacja z udziału"
+        }
+    }
+    
+    private var message: String {
+        switch participationState {
+        case .none:
+            return "Czy na pewno chcesz zgłosić swój udział w tym wydarzeniu? Organizator zostanie powiadomiony o Twoim zgłoszeniu."
+        case .request:
+            return "Twoje zgłoszenie oczekuje na potwierdzenie. Czy na pewno chcesz je wycofać?"
+        case .accepted:
+            return "Twoja obecność została potwierdzona. Czy na pewno chcesz zrezygnować z udziału w wydarzeniu?"
+        }
+    }
+    
+    private var iconName: String {
+        switch participationState {
+        case .none: return "person.crop.circle.badge.plus"
+        case .request: return "clock.badge.questionmark"
+        case .accepted: return "checkmark.circle.fill"
+        }
+    }
+    
+    private var iconColor: Color {
+        switch participationState {
+        case .none: return .blue
+        case .request: return .orange
+        case .accepted: return .green
+        }
+    }
+    
+    private var confirmButtonText: String {
+        switch participationState {
+        case .none: return "Potwierdź udział"
+        case .request, .accepted: return "Tak, kontynuuj"
+        }
+    }
+    
+    private var buttonColor: Color {
+        switch participationState {
+        case .none: return .blue
+        case .request, .accepted: return .red
+        }
+    }
 }

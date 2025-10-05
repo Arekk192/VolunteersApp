@@ -47,7 +47,7 @@ class MessagesViewModel: ObservableObject {
         errorMessage = nil
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.messages = mockMessages
+            self.messages = self.user.mockConversations
             self.isLoading = false
         }
     }
@@ -80,7 +80,7 @@ class MessagesViewModel: ObservableObject {
             return
         }
         
-        let filteredMessages = mockMessages.filter { message in
+        let filteredMessages = self.user.mockConversations.filter { message in
             message.text.localizedCaseInsensitiveContains(searchText)
         }
         

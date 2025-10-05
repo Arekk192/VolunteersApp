@@ -17,7 +17,95 @@ struct User: Identifiable, Hashable, Codable {
     var isAdult: Bool
     
     var organizations: [Organization]
+ 
+    var lastMessage: String {
+        return mockConversations.last?.text ?? "Rozpocznij konwersację"
+    }
+    
+    var mockConversations: [Message] {
+        return generateMockConversations()
+    }
+    
+    private func generateMockConversations() -> [Message] {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        switch displayName {
+        case "Anna Kowalska":
+            return [
+                Message(text: "Cześć Anna! Czy możemy omówić nowy projekt społecznościowy w przyszłym tygodniu?", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -2, to: now)!),
+                Message(text: "Oczywiście! Mam kilka pomysłów na rewitalizację podwórka.", isReply: true, sendAt: calendar.date(byAdding: .hour, value: -1, to: now)!),
+                Message(text: "Świetnie! Spotkajmy się w środę o 15:00 w centrum community.", isReply: false, sendAt: calendar.date(byAdding: .minute, value: -30, to: now)!)
+            ]
+        case "Jan Nowak":
+            return [
+                Message(text: "Hej Jan, potrzebujemy dodatkowych wolontariuszy na akcję ratowniczą w górach.", isReply: false, sendAt: calendar.date(byAdding: .day, value: -1, to: now)!),
+                Message(text: "Mogę być dostępny w weekend. Ile osób jeszcze potrzebujecie?", isReply: true, sendAt: calendar.date(byAdding: .hour, value: -12, to: now)!),
+                Message(text: "Minimum 3 osoby. Szkolenie odbędzie się w piątek o 18:00.", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -1, to: now)!)
+            ]
+        case "Maria Wiśniewska":
+            return [
+                Message(text: "Cześć Maria! Mamy nową partię karmy w schronisku!", isReply: false, sendAt: calendar.date(byAdding: .day, value: -2, to: now)!),
+                Message(text: "Doskonale! Akurat kończyły nam się zapasy. Przyjadę jutro rano.", isReply: true, sendAt: calendar.date(byAdding: .day, value: -1, to: now)!),
+                Message(text: "Organizujemy też event adopcyjny w sobotę - pomożesz przy organizacji?", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -3, to: now)!)
+            ]
+        case "Piotr Lewandowski":
+            return [
+                Message(text: "Piotrze, sprzątanie parku odbędzie się w sobotę o 10:00", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -5, to: now)!),
+                Message(text: "Super! Przyniosę worki i rękawice dla grupy.", isReply: true, sendAt: calendar.date(byAdding: .hour, value: -4, to: now)!),
+                Message(text: "Dziękuję! Zebraliśmy 50 worków śmieci na ostatniej akcji!", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -2, to: now)!)
+            ]
+        case "Katarzyna Zielińska":
+            return [
+                Message(text: "Katarzyno, mentoring młodzieży zaczyna się w przyszłym miesiącu", isReply: false, sendAt: calendar.date(byAdding: .day, value: -3, to: now)!),
+                Message(text: "Już przygotowałam materiały. Czy mamy już listę uczestników?", isReply: true, sendAt: calendar.date(byAdding: .day, value: -2, to: now)!),
+                Message(text: "Tak, 15 osób się zapisało. Pierwsze spotkanie 5-go.", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -6, to: now)!)
+            ]
+        case "Tomasz Wójcik":
+            return [
+                Message(text: "Tomasz, pan Jan czeka na wizytę w czwartek", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -8, to: now)!),
+                Message(text: "Dobrze, odwiedzę go o 14:00. Czy potrzebuje czegoś z apteki?", isReply: true, sendAt: calendar.date(byAdding: .hour, value: -7, to: now)!),
+                Message(text: "Tak, prosił o leki na nadciśnienie. Dziękuję za pomoc!", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -4, to: now)!)
+            ]
+        case "Agnieszka Dąbrowska":
+            return [
+                Message(text: "Agnieszko, dostaliśmy dużą dostawę żywności do rozdysponowania", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -10, to: now)!),
+                Message(text: "Ile rodzin możemy obsłużyć tym razem?", isReply: true, sendAt: calendar.date(byAdding: .hour, value: -9, to: now)!),
+                Message(text: "Około 100 rodzin. Akcja żywnościowa w sobotę - jesteś dostępna?", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -2, to: now)!)
+            ]
+        case "Michał Kamiński":
+            return [
+                Message(text: "Michał, nowy sprzęt ratowniczy już dotarł!", isReply: false, sendAt: calendar.date(byAdding: .day, value: -1, to: now)!),
+                Message(text: "Świetnie! Kiedy możemy go przetestować?", isReply: true, sendAt: calendar.date(byAdding: .hour, value: -20, to: now)!),
+                Message(text: "Szkolenie z nowego sprzętu w niedzielę o 10:00.", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -5, to: now)!)
+            ]
+        case "Magdalena Kwiatkowska":
+            return [
+                Message(text: "Magdo, mamy nowe kotki do adopcji! Są przeurocze!", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -12, to: now)!),
+                Message(text: "O nie! Musimy znaleźć im domy. Zrobię zdjęcia do ogłoszeń.", isReply: true, sendAt: calendar.date(byAdding: .hour, value: -11, to: now)!),
+                Message(text: "Event adopcyjny przeniesiony na przyszły weekend.", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -1, to: now)!)
+            ]
+        case "Krzysztof Mazur":
+            return [
+                Message(text: "Krzysztofie, materiały budowlane już dostarczone na plac budowy", isReply: false, sendAt: calendar.date(byAdding: .day, value: -2, to: now)!),
+                Message(text: "Doskonale! Remont domu pani Zofii idzie zgodnie z planem.", isReply: true, sendAt: calendar.date(byAdding: .day, value: -1, to: now)!),
+                Message(text: "Potrzebujemy dodatkowych rąk do pracy w sobotę. Możesz pomóc?", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -4, to: now)!)
+            ]
+        case "Zuzanna Szymańska":
+            return [
+                Message(text: "Zuzanno, warzywa w ogrodzie społecznościowym już dojrzewają!", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -24, to: now)!),
+                Message(text: "Wspaniale! Zbierzemy je w czwartek z dziećmi z warsztatów.", isReply: true, sendAt: calendar.date(byAdding: .hour, value: -20, to: now)!),
+                Message(text: "Warsztaty ekologiczne dla dzieci w piątek o 16:00.", isReply: false, sendAt: calendar.date(byAdding: .hour, value: -2, to: now)!)
+            ]
+        default:
+            return [
+                Message(text: "Cześć! Jak tam Twoje projekty?", isReply: false, sendAt: calendar.date(byAdding: .day, value: -1, to: now)!),
+                Message(text: "Wszystko idzie zgodnie z planem! Dziękuję za pytanie.", isReply: true, sendAt: calendar.date(byAdding: .hour, value: -12, to: now)!)
+            ]
+        }
+    }
 }
+
 
 let mockUsers: [User] = [
     User(

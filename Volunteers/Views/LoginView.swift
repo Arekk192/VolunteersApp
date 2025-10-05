@@ -165,7 +165,7 @@ struct LoginView: View {
     private func handleAuthentication() {
         isProcessing = true
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             isProcessing = false
             
             isLoggedIn = true

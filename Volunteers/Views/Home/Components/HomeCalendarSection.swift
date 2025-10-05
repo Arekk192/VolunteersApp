@@ -25,12 +25,14 @@ struct HomeCalendarSection: View {
                         Image(systemName: "chevron.left")
                             .font(.caption)
                             .fontWeight(.bold)
+                            .foregroundStyle(.blue)
                     }
                     
                     Button(action: { viewModel.moveMonth(by: 1) }) {
                         Image(systemName: "chevron.right")
                             .font(.caption)
                             .fontWeight(.bold)
+                            .foregroundStyle(.blue)
                     }
                 }
             }
@@ -41,7 +43,7 @@ struct HomeCalendarSection: View {
                     Text(day)
                         .font(.caption)
                         .fontWeight(.medium)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(Color.secondary)
                 }
             }
             
@@ -60,7 +62,7 @@ struct HomeCalendarSection: View {
                         }
                     } else {
                         Rectangle()
-                            .foregroundColor(.clear)
+                            .foregroundStyle(.clear)
                     }
                 }
             }
